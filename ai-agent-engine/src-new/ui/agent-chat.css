@@ -1,0 +1,388 @@
+/**
+ * agent-chat.css — AI 对话面板样式
+ *
+ * 设计原则：
+ *   - 使用 CSS 变量继承 CyberShield 主题色
+ *   - 所有类名前缀 cs-agent- 避免冲突
+ *   - 响应式布局，适配不同平台页面宽度
+ */
+
+/* ─── 面板容器 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-chat-panel {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  max-height: 50vh;
+  font-size: 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ─── 消息列表 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-message-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ─── 消息气泡 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-msg {
+  max-width: 85%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  line-height: 1.5;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.cs-agent-msg--user {
+  align-self: flex-end;
+  background: var(--cs-primary, #3b82f6);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.cs-agent-msg--agent {
+  align-self: flex-start;
+  background: var(--cs-surface-alt, #f0f0f0);
+  color: var(--cs-text, #1a1a1a);
+  border-bottom-left-radius: 4px;
+}
+
+.cs-agent-msg--thinking {
+  opacity: 0.5;
+  font-style: italic;
+  animation: cs-agent-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes cs-agent-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* ─── 推荐卡片 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0;
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.cs-agent-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  border: 2px solid var(--cs-border, #ddd);
+  border-radius: 10px;
+  background: var(--cs-surface, #fff);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  font-size: 13px;
+  min-width: 140px;
+  max-width: 200px;
+}
+
+.cs-agent-card:hover {
+  border-color: var(--cs-primary, #3b82f6);
+  background: var(--cs-primary-bg, #eff6ff);
+}
+
+.cs-agent-card--selected {
+  border-color: var(--cs-primary, #3b82f6);
+  background: var(--cs-primary-bg, #eff6ff);
+}
+
+.cs-agent-card__check {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 2px solid var(--cs-border, #ccc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--cs-primary, #3b82f6);
+}
+
+.cs-agent-card--selected .cs-agent-card__check {
+  background: var(--cs-primary, #3b82f6);
+  border-color: var(--cs-primary, #3b82f6);
+  color: white;
+}
+
+.cs-agent-card__body {
+  flex: 1;
+}
+
+.cs-agent-card__label {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.cs-agent-card__reason {
+  font-size: 12px;
+  color: var(--cs-text-muted, #666);
+}
+
+/* ─── 澄清问题 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-questions {
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.cs-agent-question-group {
+  margin: 4px 0;
+}
+
+.cs-agent-question-label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--cs-text, #1a1a1a);
+}
+
+.cs-agent-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cs-agent-option-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--cs-border, #ddd);
+  border-radius: 20px;
+  background: var(--cs-surface, #fff);
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s ease;
+}
+
+.cs-agent-option-btn:hover {
+  border-color: var(--cs-primary, #3b82f6);
+  color: var(--cs-primary, #3b82f6);
+}
+
+.cs-agent-option-btn--active {
+  background: var(--cs-primary, #3b82f6);
+  border-color: var(--cs-primary, #3b82f6);
+  color: white;
+}
+
+/* ─── 操作按钮 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-actions {
+  display: flex;
+  gap: 8px;
+  margin: 4px 0;
+  align-self: flex-start;
+}
+
+.cs-agent-action-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cs-agent-action-btn--primary {
+  background: var(--cs-primary, #3b82f6);
+  color: white;
+}
+
+.cs-agent-action-btn--primary:hover {
+  opacity: 0.9;
+}
+
+.cs-agent-action-btn--ghost {
+  background: transparent;
+  border: 1px solid var(--cs-border, #ddd);
+  color: var(--cs-text, #333);
+}
+
+.cs-agent-action-btn--ghost:hover {
+  background: var(--cs-surface-alt, #f5f5f5);
+}
+
+.cs-agent-action-btn--danger {
+  background: transparent;
+  border: 1px solid var(--cs-danger, #e74c3c);
+  color: var(--cs-danger, #e74c3c);
+}
+
+.cs-agent-action-btn--danger:hover {
+  background: var(--cs-danger-bg, #fef2f2);
+}
+
+/* ─── 确认区域 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-confirm-area {
+  margin: 4px 0;
+  align-self: flex-start;
+}
+
+/* ─── 规则预览 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-rule-preview {
+  align-self: flex-start;
+  background: var(--cs-surface, #fff);
+  border: 1px solid var(--cs-border, #ddd);
+  border-radius: 10px;
+  padding: 12px;
+  max-width: 100%;
+  margin: 4px 0;
+}
+
+.cs-agent-preview-header {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--cs-text, #1a1a1a);
+}
+
+.cs-agent-preview-table {
+  width: 100%;
+  font-size: 13px;
+  border-collapse: collapse;
+}
+
+.cs-agent-preview-table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--cs-border-light, #eee);
+}
+
+.cs-agent-preview-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cs-agent-preview-label {
+  color: var(--cs-text-muted, #888);
+  width: 100px;
+  white-space: nowrap;
+}
+
+/* ─── 诊断结果 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-diagnosis {
+  align-self: flex-start;
+  background: var(--cs-surface, #fff);
+  border: 1px solid var(--cs-border, #ddd);
+  border-radius: 10px;
+  padding: 12px;
+  max-width: 100%;
+  margin: 4px 0;
+}
+
+.cs-agent-diagnosis-header {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.cs-agent-diagnosis-verdict {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.cs-agent-diagnosis-confidence {
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.cs-agent-diagnosis-detail {
+  font-size: 13px;
+  color: var(--cs-text-muted, #666);
+  margin: 6px 0;
+  line-height: 1.6;
+}
+
+.cs-agent-diagnosis-suggestion {
+  font-size: 13px;
+  padding: 8px;
+  background: var(--cs-info-bg, #f0f9ff);
+  border-radius: 6px;
+  color: var(--cs-info, #0369a1);
+  margin-top: 6px;
+}
+
+/* ─── 快捷入口 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+  align-self: flex-start;
+}
+
+.cs-agent-quick-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--cs-primary, #3b82f6);
+  border-radius: 16px;
+  background: transparent;
+  color: var(--cs-primary, #3b82f6);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cs-agent-quick-btn:hover {
+  background: var(--cs-primary, #3b82f6);
+  color: white;
+}
+
+/* ─── 输入区域 ──────────────────────────────────────────────────────────────── */
+
+.cs-agent-input-area {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--cs-border, #eee);
+}
+
+.cs-agent-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--cs-border, #ddd);
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.cs-agent-input:focus {
+  border-color: var(--cs-primary, #3b82f6);
+}
+
+.cs-agent-send-btn {
+  padding: 8px 16px;
+  background: var(--cs-primary, #3b82f6);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.cs-agent-send-btn:hover {
+  opacity: 0.9;
+}
+
+.cs-agent-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

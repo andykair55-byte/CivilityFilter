@@ -1,0 +1,21 @@
+{
+  "_comment": "CyberShield Filipino Toxicity Rules (13 keywords)",
+  "hard_keywords": [
+    "puta ka",
+    "putang ina",
+    "tang ina"
+  ],
+  "soft_keywords": [
+    "tangina",
+    "burat",
+    "bayag",
+    "bobo",
+    "nognog",
+    "tanga",
+    "ulol",
+    "kantot",
+    "anak ka ng puta",
+    "jakol"
+  ],
+  "regex_patterns": []
+}

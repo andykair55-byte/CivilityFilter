@@ -1,0 +1,29 @@
+{
+  "_comment": "CyberShield Kabyle Toxicity Rules (21 keywords)",
+  "hard_keywords": [
+    "abbuc",
+    "aεeṭṭuḍ",
+    "aḥeččun",
+    "taḥeččunt",
+    "axuzziḍ",
+    "asxuẓeḍ"
+  ],
+  "soft_keywords": [
+    "qqu",
+    "qquɣ",
+    "qqiɣ",
+    "qqan",
+    "qqant",
+    "tteqqun",
+    "tteqqunt",
+    "aqerqur",
+    "ajeḥniḍ",
+    "awellaq",
+    "iwellaqen",
+    "iḥeččan",
+    "iḥeččunen",
+    "uqan",
+    "taxna"
+  ],
+  "regex_patterns": []
+}

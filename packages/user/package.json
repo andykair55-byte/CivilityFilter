@@ -1,0 +1,13 @@
+{
+  "name": "@cyber-shield/user",
+  "version": "0.7.0-user",
+  "description": "CyberShield User Edition - refined UI with AI features",
+  "type": "module",
+  "main": "index.user.js",
+  "keywords": ["cybershield", "userscript", "user"],
+  "author": "CyberShield Contributors",
+  "license": "MIT",
+  "dependencies": {
+    "@cyber-shield/core": "file:../core"
+  }
+}

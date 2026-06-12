@@ -1,0 +1,252 @@
+/**
+ * 主题知识库查询模块
+ * 从内联数据加载知识库，提供分类查询和主题匹配功能
+ */
+
+import {
+  TopicKnowledgeBase,
+  TopicEntry,
+  CategoryDefinition
+} from '../types/knowledge';
+import { RecommendationItem } from '../types/protocol';
+
+/**
+ * 默认知识库数据（内联，避免 MVP 阶段文件读取的复杂性）
+ */
+const DEFAULT_KNOWLEDGE_BASE: TopicKnowledgeBase = {
+  version: '1.0.0-mvp',
+  categories: [
+    { id: 'game', label: '游戏', keywords: ['游戏', '手游', '端游', '网游', '电竞', 'game', 'gaming'], description: '电子游戏相关内容' },
+    { id: 'movie', label: '影视', keywords: ['电影', '电视剧', '综艺', '动漫', '番剧', 'movie', 'film', 'tv', 'anime'], description: '影视娱乐内容' },
+    { id: 'tech', label: '科技', keywords: ['科技', '技术', '数码', 'AI', '编程', '手机', '电脑', 'tech', 'digital'], description: '科技数码内容' },
+    { id: 'sport', label: '体育', keywords: ['体育', '足球', '篮球', 'NBA', '比赛', '运动', 'sport', 'nba', 'soccer'], description: '体育赛事与运动' },
+    { id: 'food', label: '美食', keywords: ['美食', '吃', '餐厅', '菜谱', '做饭', 'food', 'cook', 'recipe'], description: '美食烹饪内容' },
+    { id: 'music', label: '音乐', keywords: ['音乐', '歌', '歌手', '演唱会', '专辑', 'music', 'song', 'concert'], description: '音乐相关内容' }
+  ],
+  topics: [
+    {
+      name: '王者荣耀', category: 'game',
+      aliases: ['王者', 'Honor of Kings', '农药'],
+      related: ['和平精英', '英雄联盟'],
+      scopes: [
+        { id: 'scope_game', label: '游戏本体', reason: '直接相关' },
+        { id: 'scope_video', label: '视频内容', reason: '常见关联内容' },
+        { id: 'scope_stream', label: '直播', reason: '高频关联内容' },
+        { id: 'scope_guide', label: '攻略/教学', reason: '常见内容形态' }
+      ],
+      keywords: ['王者荣耀', '王者', '农药', '上分', '排位', '英雄', '皮肤']
+    },
+    {
+      name: '和平精英', category: 'game',
+      aliases: ['吃鸡', 'PUBG Mobile'],
+      related: ['王者荣耀', '原神'],
+      scopes: [
+        { id: 'scope_game', label: '游戏本体', reason: '直接相关' },
+        { id: 'scope_video', label: '视频内容', reason: '常见关联内容' },
+        { id: 'scope_stream', label: '直播', reason: '高频关联内容' }
+      ],
+      keywords: ['和平精英', '吃鸡', 'PUBG', '空投', '决赛圈']
+    },
+    {
+      name: '原神', category: 'game',
+      aliases: ['Genshin', '原神'],
+      related: ['崩坏星穹铁道', '鸣潮'],
+      scopes: [
+        { id: 'scope_game', label: '游戏本体', reason: '直接相关' },
+        { id: 'scope_video', label: '视频内容', reason: '常见关联内容' },
+        { id: 'scope_guide', label: '攻略/教学', reason: '常见内容形态' }
+      ],
+      keywords: ['原神', 'Genshin', '抽卡', '圣遗物', '深渊']
+    },
+    {
+      name: '英雄联盟', category: 'game',
+      aliases: ['LOL', '撸啊撸'],
+      related: ['王者荣耀', 'DOTA2'],
+      scopes: [
+        { id: 'scope_game', label: '游戏本体', reason: '直接相关' },
+        { id: 'scope_esport', label: '电竞赛事', reason: '核心关联内容' },
+        { id: 'scope_stream', label: '直播', reason: '高频关联内容' }
+      ],
+      keywords: ['英雄联盟', 'LOL', '排位', '英雄', 'S赛']
+    },
+    {
+      name: '流浪地球', category: 'movie',
+      aliases: ['流浪地球2', 'The Wandering Earth'],
+      related: ['三体', '刘慈欣'],
+      scopes: [
+        { id: 'scope_movie', label: '电影本体', reason: '直接相关' },
+        { id: 'scope_review', label: '影评/讨论', reason: '常见关联内容' }
+      ],
+      keywords: ['流浪地球', '刘慈欣', '太阳', '行星发动机']
+    },
+    {
+      name: '三体', category: 'movie',
+      aliases: ['Three-Body Problem', '三体问题'],
+      related: ['流浪地球', '刘慈欣'],
+      scopes: [
+        { id: 'scope_tv', label: '电视剧', reason: '直接相关' },
+        { id: 'scope_novel', label: '原著小说', reason: '核心来源' },
+        { id: 'scope_review', label: '讨论/解读', reason: '常见关联内容' }
+      ],
+      keywords: ['三体', '刘慈欣', '黑暗森林', '降维打击', '面壁者']
+    },
+    {
+      name: 'iPhone', category: 'tech',
+      aliases: ['苹果手机', 'iPhone'],
+      related: ['iPad', 'MacBook'],
+      scopes: [
+        { id: 'scope_product', label: '产品资讯', reason: '直接相关' },
+        { id: 'scope_review', label: '评测', reason: '常见关联内容' },
+        { id: 'scope_rumor', label: '爆料/传闻', reason: '高频关联内容' }
+      ],
+      keywords: ['iPhone', '苹果手机', 'iOS', 'A系列', 'Pro Max']
+    },
+    {
+      name: 'AI', category: 'tech',
+      aliases: ['人工智能', 'ChatGPT', '大模型', 'LLM'],
+      related: ['编程', '科技'],
+      scopes: [
+        { id: 'scope_news', label: '行业动态', reason: '直接相关' },
+        { id: 'scope_tutorial', label: '教程/应用', reason: '常见关联内容' },
+        { id: 'scope_discussion', label: '观点讨论', reason: '常见关联内容' }
+      ],
+      keywords: ['AI', '人工智能', 'ChatGPT', '大模型', 'GPT', 'Claude', 'LLM']
+    },
+    {
+      name: 'NBA', category: 'sport',
+      aliases: ['美职篮', 'NBA'],
+      related: ['CBA', '篮球'],
+      scopes: [
+        { id: 'scope_game', label: '赛事', reason: '直接相关' },
+        { id: 'scope_player', label: '球员动态', reason: '高频关联内容' },
+        { id: 'scope_highlight', label: '集锦/精彩', reason: '常见关联内容' }
+      ],
+      keywords: ['NBA', '篮球', '詹姆斯', '库里', '季后赛']
+    },
+    {
+      name: '世界杯', category: 'sport',
+      aliases: ['足球世界杯', 'World Cup'],
+      related: ['欧冠', '五大联赛'],
+      scopes: [
+        { id: 'scope_match', label: '比赛', reason: '直接相关' },
+        { id: 'scope_news', label: '新闻/动态', reason: '常见关联内容' },
+        { id: 'scope_highlight', label: '集锦/精彩', reason: '常见关联内容' }
+      ],
+      keywords: ['世界杯', '足球', '梅西', 'C罗', '进球']
+    },
+    {
+      name: '周杰伦', category: 'music',
+      aliases: ['杰伦', 'Jay Chou'],
+      related: ['林俊杰', '陈奕迅'],
+      scopes: [
+        { id: 'scope_music', label: '音乐作品', reason: '直接相关' },
+        { id: 'scope_concert', label: '演唱会', reason: '高频关联内容' },
+        { id: 'scope_news', label: '动态/新闻', reason: '常见关联内容' }
+      ],
+      keywords: ['周杰伦', '杰伦', '演唱会', '新专辑', '华语乐坛']
+    },
+    {
+      name: '烘焙', category: 'food',
+      aliases: ['烤', 'baking', '甜品'],
+      related: ['菜谱', '甜点'],
+      scopes: [
+        { id: 'scope_recipe', label: '食谱/教程', reason: '直接相关' },
+        { id: 'scope_show', label: '美食视频', reason: '常见关联内容' }
+      ],
+      keywords: ['烘焙', '蛋糕', '面包', '烤箱', '甜品']
+    }
+  ]
+};
+
+/**
+ * 创建知识库管理器
+ */
+export function createKnowledgeManager(data?: TopicKnowledgeBase) {
+  const kb: TopicKnowledgeBase = data || DEFAULT_KNOWLEDGE_BASE;
+
+  return {
+    /**
+     * 获取所有分类
+     */
+    getCategories(): CategoryDefinition[] {
+      return kb.categories;
+    },
+
+    /**
+     * 根据 ID 获取分类
+     */
+    getCategoryById(id: string): CategoryDefinition | undefined {
+      return kb.categories.find(c => c.id === id);
+    },
+
+    /**
+     * 获取所有主题
+     */
+    getTopics(): TopicEntry[] {
+      return kb.topics;
+    },
+
+    /**
+     * 根据名称或别名查找主题
+     */
+    findTopic(query: string): TopicEntry | undefined {
+      const normalizedQuery = query.trim().toLowerCase();
+      return kb.topics.find(t =>
+        t.name.toLowerCase() === normalizedQuery ||
+        t.aliases.some(a => a.toLowerCase() === normalizedQuery) ||
+        t.keywords.some(k => normalizedQuery.includes(k.toLowerCase()))
+      );
+    },
+
+    /**
+     * 模糊搜索主题（关键词包含匹配）
+     */
+    searchTopics(query: string): TopicEntry[] {
+      const normalizedQuery = query.trim().toLowerCase();
+      if (!normalizedQuery) return [];
+
+      return kb.topics.filter(t =>
+        t.name.toLowerCase().includes(normalizedQuery) ||
+        t.aliases.some(a => a.toLowerCase().includes(normalizedQuery)) ||
+        t.keywords.some(k => normalizedQuery.includes(k.toLowerCase()) || k.toLowerCase().includes(normalizedQuery))
+      );
+    },
+
+    /**
+     * 根据分类查找主题
+     */
+    findTopicsByCategory(categoryId: string): TopicEntry[] {
+      return kb.topics.filter(t => t.category === categoryId);
+    },
+
+    /**
+     * 匹配用户输入到分类
+     */
+    matchCategory(input: string): CategoryDefinition | undefined {
+      const normalizedInput = input.trim().toLowerCase();
+      return kb.categories.find(c =>
+        c.keywords.some(k => normalizedInput.includes(k.toLowerCase()))
+      );
+    },
+
+    /**
+     * 将主题的 scopes 转换为推荐项
+     */
+    topicToRecommendations(topic: TopicEntry): RecommendationItem[] {
+      return topic.scopes.map(scope => ({
+        id: scope.id,
+        label: scope.label,
+        type: 'scope' as const,
+        reason: scope.reason,
+        selected: false
+      }));
+    },
+
+    /**
+     * 获取知识库版本
+     */
+    getVersion(): string {
+      return kb.version;
+    }
+  };
+}

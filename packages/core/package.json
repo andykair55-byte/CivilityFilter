@@ -1,0 +1,10 @@
+{
+  "name": "@cyber-shield/core",
+  "version": "0.7.0",
+  "description": "Core detection and filtering modules shared between CyberShield user and dev editions",
+  "type": "module",
+  "main": "index.js",
+  "keywords": ["cybershield", "detection", "filtering", "toxicity"],
+  "author": "CyberShield Contributors",
+  "license": "MIT"
+}

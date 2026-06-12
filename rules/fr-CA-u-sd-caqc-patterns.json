@@ -1,0 +1,15 @@
+{
+  "_comment": "CyberShield Canadian French Toxicity Rules (7 keywords)",
+  "hard_keywords": [
+    "noune",
+    "osti"
+  ],
+  "soft_keywords": [
+    "criss",
+    "crisse",
+    "calice",
+    "tabarnak",
+    "viarge"
+  ],
+  "regex_patterns": []
+}

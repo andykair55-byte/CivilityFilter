@@ -1,0 +1,26 @@
+{
+  "name": "cyber-shield-monorepo",
+  "version": "0.7.0",
+  "private": true,
+  "description": "A userscript that protects you from online harassment — across any platform.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs user",
+    "build:user": "node scripts/build.mjs user",
+    "build:dev": "node scripts/build.mjs dev",
+    "build:dev:watch": "node scripts/build.mjs dev --watch",
+    "build:all": "node scripts/build.mjs user && node scripts/build.mjs dev",
+    "dev": "node scripts/build.mjs dev --watch"
+  },
+  "keywords": ["cybershield", "userscript", "harassment", "protection", "tampermonkey"],
+  "author": "CyberShield Contributors",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "rollup": "^4.61.0"
+  },
+  "dependencies": {
+    "naughty-words": "^1.2.0"
+  }
+}

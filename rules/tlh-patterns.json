@@ -1,0 +1,10 @@
+{
+  "_comment": "CyberShield Klingon Toxicity Rules (3 keywords)",
+  "hard_keywords": [],
+  "soft_keywords": [
+    "ghuy'cha'",
+    "qi'yah",
+    "qu'vatlh"
+  ],
+  "regex_patterns": []
+}
